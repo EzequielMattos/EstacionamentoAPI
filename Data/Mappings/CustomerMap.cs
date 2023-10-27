@@ -8,7 +8,7 @@ namespace EstacionamentoAPI.Data.Mappings
     {
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
-            builder.ToTable("Cars");
+            builder.ToTable("Customers");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd().UseIdentityColumn();
             builder.Property(x => x.Name).IsRequired().HasColumnName("Name").HasColumnType("NVARCHAR").HasMaxLength(100);
