@@ -1,5 +1,6 @@
 ﻿using EstacionamentoAPI.Data;
 using EstacionamentoAPI.Extensions;
+using EstacionamentoAPI.Models;
 using EstacionamentoAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,7 @@ namespace EstacionamentoAPI.Controllers
         }
 
         [HttpPost("v1/users/login")]
-        public async Task<IActionResult> Post(LoginViewModel model)
+        public async Task<IActionResult> PostAsync(LoginViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState.GetErrors());
@@ -37,12 +38,12 @@ namespace EstacionamentoAPI.Controllers
             }
             catch
             {
-                return StatusCode(500, new ResultViewModel<string>("00X001 - Erro interno no servidor!"));
+                return StatusCode(500, new ResultViewModel<List<User>>("00X001 - Erro interno no servidor!"));
             }
         }
 
-        [HttpPut("v1/users/change-password")]
-        public async Task<IActionResult> ChancePassword(LoginViewModel model)
+        [HttpPut("v1/users/login/change-password")]
+        public async Task<IActionResult> ChancePasswordAsync(LoginViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState.GetErrors());
@@ -64,7 +65,7 @@ namespace EstacionamentoAPI.Controllers
             }
             catch
             {
-                return StatusCode(500, new ResultViewModel<string>("00X002 - Erro interno no servidor!"));
+                return StatusCode(500, new ResultViewModel<List<User>>("00X002 - Erro interno no servidor!"));
             }
         }
     }
