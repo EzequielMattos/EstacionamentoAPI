@@ -14,7 +14,7 @@ namespace EstacionamentoAPI.ViewModels
         public string Email { get; set; }
 
         [Required(ErrorMessage = "O campo senha é obrigatório!")]
-        [StringLength(6, MinimumLength = 10, ErrorMessage = "Este campo deve conter entre 6 e 10 caracteres!")]
+        [StringLength(10, MinimumLength = 6, ErrorMessage = "Este campo deve conter entre 6 e 10 caracteres!")]
         public string Password { get; set; }
     }
 }

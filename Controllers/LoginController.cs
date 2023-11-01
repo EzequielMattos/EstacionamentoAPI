@@ -1,6 +1,7 @@
 ﻿using EstacionamentoAPI.Data;
 using EstacionamentoAPI.Extensions;
 using EstacionamentoAPI.Models;
+using EstacionamentoAPI.Services;
 using EstacionamentoAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +13,11 @@ namespace EstacionamentoAPI.Controllers
     public class LoginController : ControllerBase
     {
         private readonly DataContext _context;
-        public LoginController(DataContext context) 
+        private readonly TokenService _token;
+        public LoginController(DataContext context, TokenService token) 
         { 
             _context = context;
+            _token = token;
         }
 
         [HttpPost("v1/users/login")]
@@ -33,8 +36,8 @@ namespace EstacionamentoAPI.Controllers
 
             try
             {
-                //geração do token e return;
-                return Ok(); //apenas para nao dar erro de código enquanto crio as demais funções
+                var token = _token.GerarToken(user);
+                return Ok(new ResultViewModel<string>(token, null));
             }
             catch
             {

@@ -76,10 +76,10 @@ namespace EstacionamentoAPI.Controllers
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
 
-                return Created($"v1/user/{user.Id}",new ResultViewModel<dynamic>(new User
+                return Created($"v1/user/{user.Id}",new ResultViewModel<dynamic>(new
                 {
-                    Name = user.Name,
-                    Email = user.Email,
+                    user.Name,
+                    user.Email,
                 }));
             }
             catch
@@ -110,10 +110,10 @@ namespace EstacionamentoAPI.Controllers
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
 
-                return Ok(new ResultViewModel<dynamic>(new User
+                return Ok(new ResultViewModel<dynamic>(new 
                 {
-                    Name = user.Name,
-                    Email = user.Email,
+                    user.Name,
+                    user.Email,
                 }));
             }
             catch
