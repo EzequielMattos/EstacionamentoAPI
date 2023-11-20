@@ -9,7 +9,8 @@ namespace EstacionamentoAPI.Extensions
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.Email),
             };
             claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Name)));
             return claims;

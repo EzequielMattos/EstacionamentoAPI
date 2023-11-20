@@ -2,6 +2,8 @@
 using EstacionamentoAPI.Extensions;
 using EstacionamentoAPI.Models;
 using EstacionamentoAPI.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SecureIdentity.Password;
@@ -11,13 +13,16 @@ namespace EstacionamentoAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private DataContext _context;
-        public UserController(DataContext context)
+        private readonly DataContext _context;
+        private readonly UserManager<IdentityUser<int>> _userManager;
+        public UserController(DataContext context, UserManager<IdentityUser<int>> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [HttpGet("v1/users")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllAsync([FromQuery] int page = 1, [FromQuery] int pageSize = 25) 
         {
             try
@@ -39,6 +44,7 @@ namespace EstacionamentoAPI.Controllers
         }
 
         [HttpGet("v1/users/{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAsync([FromRoute] int id)
         {
             try
@@ -57,12 +63,18 @@ namespace EstacionamentoAPI.Controllers
         }
 
         [HttpPost("v1/users")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PostAsync([FromBody] EditorUserViewModel model)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(new ResultViewModel<User>(ModelState.GetErrors()));
+
+                var userEmail = _context.Users.AsNoTracking().FirstOrDefault(x => x.Email == model.Email);
+
+                if (userEmail != null)
+                    return StatusCode(400, new ResultViewModel<User>($"Esse e-mail já está cadastrado no sistema!"));
 
                 var password = PasswordHasher.Hash(model.Password);
 
@@ -75,6 +87,9 @@ namespace EstacionamentoAPI.Controllers
 
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
+
+                //Adiciona o role ao usuario
+                //TO DO
 
                 return Created($"v1/user/{user.Id}",new ResultViewModel<dynamic>(new
                 {
@@ -89,6 +104,7 @@ namespace EstacionamentoAPI.Controllers
         }
 
         [HttpPut("v1/users/{id:int}")]
+        [Authorize(Roles = "Customer, Admin")]
         public async Task<IActionResult> PutAsync([FromBody] EditorUserViewModel model, [FromRoute] int id)
         {
             try
@@ -123,6 +139,7 @@ namespace EstacionamentoAPI.Controllers
         }
 
         [HttpDelete("v1/users/{id:int}")]
+        [Authorize(Roles = "Customer, Admin")]
         public async Task<IActionResult> DeleteAsync([FromRoute] int id)
         {
             try

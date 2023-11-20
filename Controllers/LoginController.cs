@@ -3,6 +3,7 @@ using EstacionamentoAPI.Extensions;
 using EstacionamentoAPI.Models;
 using EstacionamentoAPI.Services;
 using EstacionamentoAPI.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SecureIdentity.Password;
@@ -21,6 +22,7 @@ namespace EstacionamentoAPI.Controllers
         }
 
         [HttpPost("v1/users/login")]
+        [AllowAnonymous]
         public async Task<IActionResult> PostAsync(LoginViewModel model)
         {
             if (!ModelState.IsValid)
@@ -46,6 +48,7 @@ namespace EstacionamentoAPI.Controllers
         }
 
         [HttpPut("v1/users/login/change-password")]
+        [AllowAnonymous]
         public async Task<IActionResult> ChancePasswordAsync(LoginViewModel model)
         {
             if (!ModelState.IsValid)
