@@ -12,6 +12,8 @@ namespace EstacionamentoAPI.Data
         public DbSet<Car> Cars { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Vacancie> Vacancies { get; set; }
+        public DbSet<CarCustomer> CarsCustomers { get; set; }
+        public DbSet<UserRole> UsersRoles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

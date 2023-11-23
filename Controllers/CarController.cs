@@ -69,23 +69,29 @@ namespace EstacionamentoAPI.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(new ResultViewModel<Car>(ModelState.GetErrors()));
 
-                var plateCarro = _context.Cars.AsNoTracking().FirstOrDefault(x => x.LicensePlate == model.LicensePlate);
+                var plateCarro = _context.Cars.AsNoTracking().FirstOrDefault(x => x.LicensePlate.ToUpper() == model.LicensePlate.ToUpper());
 
                 if (plateCarro != null)
-                    return StatusCode(400, new ResultViewModel<Car>($"Já eiste um carro cadastrado com essa placa em nosso sistema!"));
+                    return StatusCode(400, new ResultViewModel<Car>($"Já existe um carro cadastrado com essa placa em nosso sistema!"));
 
                 var car = new Car
                 {
                     Model = model.Model,
                     Brand = model.Brand,
-                    LicensePlate = model.LicensePlate,
+                    LicensePlate = model.LicensePlate.ToUpper(),
                 };
 
                 await _context.Cars.AddAsync(car);
                 await _context.SaveChangesAsync();
 
-                //vincular carro a um customer
-                //to do
+                var carCustomer = new CarCustomer 
+                { 
+                    IdCar = car.Id,
+                    IdCustomer = model.IdCustomer
+                };
+
+                await _context.CarsCustomers.AddAsync(carCustomer);
+                await _context.SaveChangesAsync();
 
                 return Created($"v1/cars/{car.Id}", new ResultViewModel<dynamic>(new
                 {

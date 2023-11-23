@@ -14,11 +14,9 @@ namespace EstacionamentoAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly DataContext _context;
-        private readonly UserManager<IdentityUser<int>> _userManager;
-        public UserController(DataContext context, UserManager<IdentityUser<int>> userManager)
+        public UserController(DataContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         [HttpGet("v1/users")]
@@ -71,7 +69,7 @@ namespace EstacionamentoAPI.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest(new ResultViewModel<User>(ModelState.GetErrors()));
 
-                var userEmail = _context.Users.AsNoTracking().FirstOrDefault(x => x.Email == model.Email);
+                var userEmail = _context.Users.AsNoTracking().FirstOrDefault(x => x.Email.ToLower() == model.Email.ToLower());
 
                 if (userEmail != null)
                     return StatusCode(400, new ResultViewModel<User>($"Esse e-mail já está cadastrado no sistema!"));
@@ -88,8 +86,14 @@ namespace EstacionamentoAPI.Controllers
                 await _context.Users.AddAsync(user);
                 await _context.SaveChangesAsync();
 
-                //Adiciona o role ao usuario
-                //TO DO
+                var userRole = new UserRole
+                {
+                    IdUser = user.Id,
+                    IdRole = 1
+                };
+
+                await _context.UsersRoles.AddAsync(userRole);
+                await _context.SaveChangesAsync();
 
                 return Created($"v1/user/{user.Id}",new ResultViewModel<dynamic>(new
                 {

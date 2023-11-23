@@ -15,5 +15,8 @@ namespace EstacionamentoAPI.ViewModels
         [Required(ErrorMessage = "O campo placa é obrigatório!")]
         [MaxLength(10, ErrorMessage = "O campo placa deve ter no máximo 10 caracteres!")]
         public string LicensePlate { get; set; }
+
+        [Required(ErrorMessage = "O campo cliente é obrigatório!")]
+        public int IdCustomer { get; set; }
     }
 }
